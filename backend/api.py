@@ -16,32 +16,25 @@ async def root():
     session.commit()
     return {"message": "Hello World"}
 
-@app.get("/recover")
-async def recover():
-    contacts = session.query(Contact).all()
-    for contact in contacts:
-        print(contact)
-    return {"contact": contacts.__name__}
 
-
-@app.post("/contact/")
+@app.post("/contacts")
 async def create_contact(contact: ContactCreate):
     contact = Contact(**contact.dict())
     session.add(contact)
     session.commit()
     return contact
 
-@app.get("/contact/")
+@app.get("/contacts")
 async def get_contacts():
     contacts = session.query(Contact).all()
     return contacts
 
-@app.get("/contact/{contact_id}")
+@app.get("/contacts/{contact_id}")
 async def get_contact(contact_id: int):
     contact = session.query(Contact).filter(Contact.id == contact_id).first()
     return contact
 
-@app.put("/contact/{contact_id}")
+@app.put("/contacts/{contact_id}")
 async def update_contact(contact_id: int, contact: ContactCreate):
     contact = session.query(Contact).filter(Contact.id == contact_id).first()
     for key, value in contact.dict().items():
@@ -49,7 +42,7 @@ async def update_contact(contact_id: int, contact: ContactCreate):
     session.commit()
     return contact
 
-@app.delete("/contact/{contact_id}")
+@app.delete("/contacts/{contact_id}")
 async def delete_contact(contact_id: int):
     contact = session.query(Contact).filter(Contact.id == contact_id).first()
     session.delete(contact)
@@ -57,7 +50,13 @@ async def delete_contact(contact_id: int):
     return {"message": "Contact deleted successfully"}
 
 
-@app.get("/job/")
+@app.get("/jobs/")
 async def get_jobs():
     jobs = session.query(Job).all()
     return jobs
+
+@app.get("/jobs/{job_id}/emails")
+async def get_emails(job_id: int):
+    "get all emails of a job"
+    emails = session.query(Contact).filter(Contact.job_id == job_id).all()
+    return emails
