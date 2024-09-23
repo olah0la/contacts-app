@@ -1,12 +1,14 @@
-
-
 from fastapi import FastAPI
 
 from db import Contact, Job, session
 from schemas import ContactCreate
+from fixtures import load_fixtures
 
 app = FastAPI()
 
+@app.on_event("startup")
+async def startup_event():
+    load_fixtures()
 
 @app.get("/")
 async def root():
@@ -58,5 +60,5 @@ async def get_jobs():
 @app.get("/jobs/{job_id}/emails")
 async def get_emails(job_id: int):
     "get all emails of a job"
-    emails = session.query(Contact).filter(Contact.job_id == job_id).all()
-    return emails
+    contacts = session.query(Contact).filter(Contact.job_id == job_id).all()
+    return [contact.email for contact in contacts]
