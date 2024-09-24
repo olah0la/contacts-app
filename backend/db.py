@@ -4,8 +4,8 @@ from sqlalchemy import create_engine, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, DeclarativeBase, mapped_column, Mapped
 
 engine = create_engine("sqlite:///contacts.db", echo=True)
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+SessionLocal = sessionmaker(bind=engine)
+session = SessionLocal()
 
 class Base(DeclarativeBase):
     pass
