@@ -1,4 +1,5 @@
 fastapi[standard]
 fastapi-pagination
-uvicorn[standard]
+python-dotenv
 sqlalchemy
+uvicorn[standard]

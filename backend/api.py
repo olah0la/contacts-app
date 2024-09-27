@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import Page, add_pagination
@@ -5,11 +8,11 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-
 from db import Contact, Job, session, SessionLocal
-from schemas import ContactSchema, ContactOut
 from fixtures import load_fixtures
+from schemas import ContactSchema, ContactOut
 
+load_dotenv()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -29,7 +32,8 @@ def get_db():
 
 @app.on_event("startup")
 async def startup_event():
-    load_fixtures()
+    if os.getenv("ENV") == "dev":
+        load_fixtures()
 
 @app.post("/contacts")
 async def create_contact(contact: ContactSchema):
