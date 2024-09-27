@@ -32,7 +32,7 @@ async def startup_event():
     load_fixtures()
 
 @app.post("/contacts")
-async def create_contact(contact: ContactCreate):
+async def create_contact(contact: ContactSchema):
     contact = Contact(**contact.dict())
     session.add(contact)
     session.commit()
@@ -48,7 +48,7 @@ async def get_contact(contact_id: int):
     return contact
 
 @app.put("/contacts/{contact_id}")
-async def update_contact(contact_id: int, contact: ContactCreate):
+async def update_contact(contact_id: int, contact: ContactSchema):
     contact = session.query(Contact).filter(Contact.id == contact_id).first()
     for key, value in contact.dict().items():
         setattr(contact, key, value)

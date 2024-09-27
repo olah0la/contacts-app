@@ -12,5 +12,5 @@ class ContactSchema(BaseModel):
     address: str | None
     comment: str | None
 
-class ContactOut(ContactCreate):
+class ContactOut(ContactSchema):
     id: int

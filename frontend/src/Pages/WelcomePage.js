@@ -1,4 +1,4 @@
-import './welcome_page.css';
+import './WelcomePage.css';
 
 function WelcomePage() {
   return (
