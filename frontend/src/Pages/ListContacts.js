@@ -1,51 +1,55 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import ContactTable from '../Table/ContactTable';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ListContacts.css';
+import ContactTable from '../Table/ContactTable';
+import {baseURL} from '../services/api';
 
 function ListContacts() {
     const [isLoading, setIsLoading] = useState(true);
-    const [contacts, setContacts] = useState({items: []});
+    const [contacts, setContacts] = useState([]);
     const [pageIndex, setPageIndex] = useState(1);
-    const [pageSize, setPageSize] = useState(10); 
-    
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalContacts, setTotalContacts] = useState(0);
+    const [result, setResult] = useState({});
+
     const callAPI = useCallback(async () => {
         console.log("Calling API...");
         setIsLoading(true);
-        fetch(`http://localhost:5000/contacts?page=${pageIndex}&size=${pageSize}`)
+        fetch(`${baseURL}/contacts?page=${pageIndex}&size=${pageSize}`)
             .then(res => res.json())
             .then((result) => {
-                console.log("Result:", result);
-                setContacts(result);
-                setIsLoading(false);
+                setResult(result);
             }, (error) => {
                 console.log("Error:", error);
-                setIsLoading(false);
             });
     }, [pageIndex, pageSize]);
 
+    useEffect(() => {
+        if (result?.items) {
+            setTotalPages(result?.pages);
+            setTotalContacts(result?.total);
+            setContacts(result?.items);
+            setIsLoading(false);
+        }
+    }, [result])
 
     useEffect(() => {
         callAPI();
     }, [pageIndex, pageSize, callAPI]);
-
-    useEffect(() => {
-        console.log("Page Index:", pageIndex);
-        console.log("Page Size:", pageSize);
-        console.log("Contacts:", contacts);
-        console.log("Is Loading:", isLoading);
-    })
-
+    
     return (
         <div className="PortfolioSummary">
             <h1>Portfolio Summary</h1>
 
-            {contacts?.items.length > 0 ? (
+            {!isLoading ? (
                 <ContactTable
-                    contacts={contacts?.items}
+                    contacts={contacts}
                     pageIndex={pageIndex}
                     setPageIndex={setPageIndex}
                     pageSize={pageSize}
                     setPageSize={setPageSize}
+                    totalPages={totalPages}
+                    totalContacts={totalContacts}
                 />
             ) : (
                 <p>Loading...</p>

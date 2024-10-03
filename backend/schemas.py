@@ -4,7 +4,6 @@ class Job(BaseModel):
     name: str
 
 class ContactSchema(BaseModel):
-
     first_name: str | None 
     last_name: str | None
     job: str
